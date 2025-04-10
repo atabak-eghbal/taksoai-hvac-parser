@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HVAC Parser Prototype</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <h1>HVAC Product Brochure Parser</h1>
+  <p>Upload your HVAC brochure PDF to parse product data.</p>
+  <form id="uploadForm" enctype="multipart/form-data">
+    <input type="file" name="file" id="fileInput" required />
+    <button type="submit">Upload and Parse</button>
+  </form>
+  
+  <div id="results"></div>
+
+  <script>
+    document.getElementById("uploadForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append('file', document.getElementById("fileInput").files[0]);
+      
+      const response = await fetch("/upload", {
+        method: "POST",
+        body: formData
+      });
+      
+      if(response.ok) {
+        const data = await response.json();
+        document.getElementById("results").innerHTML = "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
+      } else {
+        document.getElementById("results").innerHTML = "Error processing the file.";
+      }
+    });
+  </script>
+</body>
+</html>
